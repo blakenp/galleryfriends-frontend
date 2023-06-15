@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
-import styles from '../styles/Navbar.module.css'
+import styles from '../styles/navbar.module.css'
 import { MenuItems } from '../data/menuitems';
 
 export default function Navbar() {
