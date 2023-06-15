@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
+import { backendLink } from '../backend/config';
 
 const MyComponent = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -21,7 +22,7 @@ const MyComponent = () => {
       const formData = new FormData();
       formData.append('image', selectedFile);
 
-      const response = await axios.post('/api/users/upload', formData);
+      const response = await axios.post(backendLink + '/api/users/upload', formData);
       console.log('Image uploaded successfully:', response.data);
     } catch (error) {
       console.error('Error uploading image:', error);
