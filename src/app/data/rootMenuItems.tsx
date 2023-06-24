@@ -11,4 +11,8 @@ export const MenuItems = [
         title: 'Login',
         url: '/login',
     },
+    // {
+    //     title: 'My Page',
+    //     url: `/community/Mario`,
+    // },
 ]

@@ -1,6 +1,8 @@
 import './styles/globals.css'
 import { Inter } from 'next/font/google'
-import Navbar from './components/navbar'
+import Navbar from './components/Navbar'
+import AuthNavbar from './components/authNavbar'
+import { AuthProvider } from './contexts/authContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,7 +19,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
+        {/* {isLoggined ? (
+          <Navbar />
+        ) : (
+          <>
+            <AuthNavbar />
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </>
+        )} */}
+        <AuthProvider>
+          <Navbar />
+        </AuthProvider>
         {children}
       </body>
     </html>

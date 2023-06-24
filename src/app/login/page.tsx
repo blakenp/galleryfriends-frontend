@@ -1,10 +1,13 @@
-import LoginForm from "../components/login"
+import LoginComponent from "../components/login"
+import { AuthProvider } from "../contexts/authContext"
+import { UserProvider } from "../contexts/userContext"
 
-export default function SignUpPage() {
+export default function LoginPage() {
     return (
-        <div>
-            <h1>Login here!</h1>
-            <LoginForm />
-        </div>
+        <AuthProvider>
+            <UserProvider>
+                <LoginComponent />
+            </UserProvider>
+        </AuthProvider>
     )
 }
