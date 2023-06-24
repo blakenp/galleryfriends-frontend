@@ -4,13 +4,12 @@ import { useState } from "react";
 import Image, { StaticImageData } from "next/image";
 import defaultProfilePic from '/public/images/default_profile_pic.png';
 import { useRouter } from 'next/navigation';
+import { useUser } from "../contexts/userContext";
 import { backendLink } from "../backend/config";
 import axios from "axios";
 
 export default function SignUpForm() {
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const { username, setUsername, password, setPassword, email, setEmail } = useUser()
     const [profilePic, setProfilePic] = useState<StaticImageData | string>(defaultProfilePic)
 
     const router = useRouter()
@@ -31,8 +30,8 @@ export default function SignUpForm() {
             console.log(response.data)
 
             setUsername('')
-            setEmail('')
             setPassword('')
+            setEmail('')
             setProfilePic(defaultProfilePic)
             router.push('/login')
         } catch (error) {

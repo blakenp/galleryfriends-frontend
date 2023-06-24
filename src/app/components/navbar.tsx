@@ -1,40 +1,22 @@
 'use client';
 
-import Link from 'next/link'
+import { useAuth } from '../contexts/authContext';
+import AuthNavbar from './authNavbar';
+import RootNavbar from './rootNavbar';
 import { usePathname } from 'next/navigation';
-import styles from '../styles/navbar.module.css'
-import { MenuItems } from '../data/menuitems';
 
 export default function Navbar() {
-    const pathname = usePathname()
+    const pathname = usePathname();
+    const { authenticated } = useAuth();
+    console.log('auth state: ', authenticated);
 
     return (
-        <div className={styles.navbar}>
-            <Link href="/">
-                <div className={styles.sitetitle}>
-                    Gallery Friends
-                </div>
-            </Link>
-            <nav className={ styles.navbar }>
-                {MenuItems.map((item) => {
-                    const isActive = pathname
-
-                    return (
-                        <Link 
-                            key={item.title}
-                            href={item.url}
-                        >
-                            <div className={
-                                isActive == item.url
-                                    ? styles.activeNavLink
-                                    : styles.navLink
-                                }>
-                                {item.title}
-                            </div>
-                        </Link>
-                    )
-                })}
-            </nav>
-        </div>
-    )
+        <>
+            { authenticated && !['/', '/signup', '/login'].includes(pathname)  ? (
+                <AuthNavbar />
+            ) : (
+                <RootNavbar />
+            )}
+        </>
+    );
 }
