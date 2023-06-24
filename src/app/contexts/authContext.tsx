@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import useStorage from '../components/useStorage';
 import { backendLink } from '../backend/config';
 import axios from 'axios';
 
@@ -12,10 +13,11 @@ export function useAuth() {
 
 export const AuthProvider = ({ children }: any) => {
   const [authenticated, setAuthenticated] = useState(false);
+  const { getItem } = useStorage();
 
   const verifyUser = async () => {
     try {
-      const sessionToken = sessionStorage.getItem('sessionToken');
+      const sessionToken = getItem('sessionToken');
       
       if (!sessionToken) {
         console.log('token not found!');

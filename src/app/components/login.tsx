@@ -3,11 +3,13 @@
 import { useUser } from '../contexts/userContext';
 import { backendLink } from '../backend/config';
 import { useAuth } from '../contexts/authContext';
+import useStorage from './useStorage';
 import axios from 'axios';
 
 const LoginForm = () => {
   const { username, setUsername, password, setPassword } = useUser();
   const { authenticated } = useAuth();
+  const { setItem } = useStorage();
   
   if (authenticated) {
     window.location.href = '/community'
@@ -23,7 +25,7 @@ const LoginForm = () => {
       const { user, sessionToken } = response.data;
 
       // Store the session token securely in session storage
-      sessionStorage.setItem('sessionToken', sessionToken);
+      setItem('sessionToken', sessionToken);
 
       // Redirect to the user's home page
       console.log('username: ', username)

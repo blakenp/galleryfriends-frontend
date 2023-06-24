@@ -3,13 +3,16 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import styles from '../styles/navbar.module.css'
-import { AuthMenuItems } from '../data/authMenuItems';
+import useAuthMenuItems from '../data/authMenuItems';
+import useStorage from './useStorage';
 
 export default function AuthNavbar() {
-    const pathname = usePathname()
+    const { removeItem } = useStorage();
+    const pathname = usePathname();
+    const authMenuItems = useAuthMenuItems();
     
     const handleLogout = () => {
-        sessionStorage.removeItem('sessionToken');
+        removeItem('sessionToken');
         window.location.href = '/'
     };
 
@@ -21,7 +24,7 @@ export default function AuthNavbar() {
                 </div>
             </Link>
             <nav className={ styles.navbar }>
-                {AuthMenuItems.map((item) => {
+                {authMenuItems.map((item) => {
                     const isActive = pathname
 
                     return (

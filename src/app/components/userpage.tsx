@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/authContext';
 import { backendLink } from '../backend/config';
+import useStorage from './useStorage';
 
 const UserComponent = () => {
-  const username = sessionStorage.getItem('username')
+  const { getItem } = useStorage();
+  const username = getItem('username')
   const { authenticated } = useAuth()
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/authContext';
+import useStorage from './useStorage';
 
 export default function CommunityPage() {
-  const username = sessionStorage.getItem('username')
+  const { getItem } = useStorage();
+  const username = getItem('username')
   const { authenticated } = useAuth();
   console.log('auth state: ', authenticated)
 

@@ -1,12 +1,21 @@
-const username = sessionStorage.getItem('username')
+import useStorage from "../components/useStorage";
 
-export const AuthMenuItems = [
+const useAuthMenuItems = () => {
+  const { getItem } = useStorage();
+  const username = getItem('username');
+
+  const authMenuItems = [
     {
-        title: 'Community',
-        url: '/community',
+      title: 'Community',
+      url: '/community',
     },
     {
-        title: 'My Page',
-        url: `/community/${username}`,
+      title: 'My Page',
+      url: `/community/${username}`,
     },
-]
+  ];
+
+  return authMenuItems;
+};
+
+export default useAuthMenuItems;
