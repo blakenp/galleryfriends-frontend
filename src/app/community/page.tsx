@@ -2,15 +2,18 @@
 
 import { AuthProvider } from '../contexts/authContext';
 import { UserProvider } from '../contexts/userContext';
+import { ImageProvider } from '../contexts/imageContext';
 import CommunityPage from '../components/community';
 
 export default function AuthenticatedCommunityPage() {
 
   return (
     <AuthProvider>
-      <UserProvider>
-        <CommunityPage />
-      </UserProvider>
+      <ImageProvider>
+        <UserProvider>
+          <CommunityPage />
+        </UserProvider>
+      </ImageProvider>
     </AuthProvider>
   );
 }
