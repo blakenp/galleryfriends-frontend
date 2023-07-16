@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .imageContainer {
+    width: calc(50% - 10px); /* Set the width to occupy 50% of the container minus the gap */
+  }
+  
+  .profileContainer {
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    gap: 10px;
+  }
+  
+  .profileContainer p {
+    margin: 0; /* Remove default margin for the paragraph element */
+  }
+  

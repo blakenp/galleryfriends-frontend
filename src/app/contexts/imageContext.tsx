@@ -18,10 +18,12 @@ interface Comment {
     comment: string;
 }
   
-interface ImageData {
-    imageUrl: string;
-    showCommentInput: boolean;
-    comment: string;
+export interface ImageData {
+  imageUrl: string;
+  showCommentInput: boolean;
+  comment: string;
+  username: string;
+  profilePic: string;
 }
 
 export const ImageProvider = ({ children }: any) => {
@@ -30,10 +32,13 @@ export const ImageProvider = ({ children }: any) => {
     const { authenticated } = useAuth();
   
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditProfileModalOpen, setEditProfileModalOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [profilePic, setProfilePic] = useState<string>('');
     const [images, setImages] = useState<ImageData[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
     const [showUploadInput, setShowUploadInput] = useState<boolean>(false);
+    const [showUploadProfilePicInput, setShowUploadProfilePicInput] = useState<boolean>(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [newComment, setNewComment] = useState('');
     const [isEditing, setIsEditing] = useState(false);
@@ -46,30 +51,67 @@ export const ImageProvider = ({ children }: any) => {
     };
 
     const fetchImages = async () => {
-        try {
-            const response = await axios.get(backendLink + `/api/users/community`);
-            const data = response.data;
-            const imageData = data.map((imageUrl: string) => ({
-                imageUrl,
-                showCommentInput: false,
-                comment: '',
-            }));
-            setImages(imageData);
-        } catch (error) {
-            console.log(error);
-        }
+      try {
+        const response = await axios.get(backendLink + `/api/users/community`);
+        const { imageData } = response.data;
+        console.log(imageData); // Log the data received from the backend
+
+        setImages(imageData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const handleProfilePicUpload = async () => {
+      if (!selectedFile) {
+        console.error('No file selected.');
+        return;
+      }
+  
+      try {
+        const formData = new FormData();
+        formData.append('profilePic', selectedFile);
+        formData.append('currentProfilePic', profilePic); // Include current profile pic
+  
+        const response = await axios.post(backendLink + `/api/users/settings/${username}`, formData);
+        console.log('Profile Pic uploaded successfully:', response.data);
+  
+        // Fetch user data again to update the profile pic
+        fetchUserData();
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     };
   
     const fetchUserData = async () => {
       try {
         const response = await axios.get(backendLink + `/api/users/userpage/${username}`);
         const userData = response.data;
-        const imageData = userData.map((imageUrl: string) => ({
+        const profileImage = userData.profilePic;
+        const imageData = userData.imageUrls.map((imageUrl: string) => ({
           imageUrl,
           showCommentInput: false,
           comment: '',
         }));
         setImages(imageData);
+        setProfilePic(profileImage);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    const fetchOtherUserData = async (otherUsername: string) => {
+      try {
+        const response = await axios.get(backendLink + `/api/users/userpage/${otherUsername}`);
+        const userData = response.data;
+        const profileImage = userData.profilePic;
+        const imageData = userData.imageUrls.map((imageUrl: string) => ({
+          imageUrl,
+          showCommentInput: false,
+          comment: '',
+        }));
+        setImages(imageData);
+        setProfilePic(profileImage);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -177,6 +219,10 @@ export const ImageProvider = ({ children }: any) => {
       setShowUploadInput((prevState) => !prevState);
     };
 
+    const handleToggleUploadProfilePicInput = () => {
+      setShowUploadProfilePicInput((prevState) => !prevState);
+    };
+
     const handleNewCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setNewComment(event.target.value);
     };
@@ -266,12 +312,23 @@ export const ImageProvider = ({ children }: any) => {
       setSelectedImageIndex(null);
     };
 
+    const openEditProfileModal = () => {
+      setEditProfileModalOpen(true);
+    };
+  
+    const closeEditProfileModal = () => {
+      setEditProfileModalOpen(false);
+    };
+
     const providerValues = {
       isModalOpen,
+      isEditProfileModalOpen,
       selectedFile,
+      profilePic,
       images,
       comments,
       showUploadInput,
+      showUploadProfilePicInput,
       selectedImageIndex,
       newComment,
       isEditing,
@@ -280,11 +337,14 @@ export const ImageProvider = ({ children }: any) => {
       handleFileUpload,
       fetchImages,
       fetchUserData,
+      fetchOtherUserData,
       loadComments,
       postComment,
       deleteImage,
       handleSubmit,
+      handleProfilePicUpload,
       handleToggleUploadInput,
+      handleToggleUploadProfilePicInput,
       handleNewCommentChange,
       handleEdit,
       handleSubmitEditedComment,
@@ -293,13 +353,15 @@ export const ImageProvider = ({ children }: any) => {
       handleCommentSubmit,
       openModal,
       closeModal,
+      openEditProfileModal,
+      closeEditProfileModal,
       deleteComment,
       handleCommentDelete,
       handleCommentEdit,
     };    
       
     return (
-        <ImageContext.Provider value={providerValues}>
+        <ImageContext.Provider value={providerValues} >
           {children}
         </ImageContext.Provider>
     );

@@ -30,10 +30,21 @@ const LoginForm = () => {
       // Redirect to the user's home page
       console.log('username: ', username)
       sessionStorage.setItem('username', user.username);
+      sessionStorage.setItem('email', user.email);
       window.location.href = '/community'
-    } catch (error) {
-      // Handle login error
-      console.error(error);
+    } catch (error: any) {
+      console.log('error message: ', error.message);
+      if (error.response && error.response.status === 400) {
+        window.alert('Invalid username!');
+      }
+      else if (error.response && error.response.status === 401) {
+        window.alert('Invalid password!')
+      }
+      else {
+        // Handle login error
+        console.error(error);
+        window.alert('Sorry, an error has occurred. Please try again!');
+      }
     }
   };
 
