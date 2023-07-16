@@ -2,18 +2,15 @@
 
 import { AuthProvider } from "@/app/contexts/authContext";
 import { ImageProvider } from "@/app/contexts/imageContext";
-import { UserProvider } from "@/app/contexts/userContext";
-import UserComponent from "@/app/components/userpage";
+import OtherUserComponent from "@/app/components/otherUserPages";
 
-export default function UserPage() {
+export default function OtherUserPage() {
 
   return (
     <div>
       <AuthProvider>
         <ImageProvider>
-          <UserProvider>
-            <UserComponent />
-          </UserProvider>
+          <OtherUserComponent />
         </ImageProvider>
       </AuthProvider>
     </div>

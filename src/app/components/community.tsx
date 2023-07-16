@@ -1,30 +1,20 @@
 import { useAuth } from '../contexts/authContext';
-import { useImage } from '../contexts/imageContext';
-import { useEffect, useState } from 'react';
+import { useImage, ImageData } from '../contexts/imageContext';
+import { useEffect } from 'react';
 import useStorage from './useStorage';
 import Image from 'next/image';
 import Modal from 'react-modal';
+import CommunityPageModal from './communityPageModal';
+import styles from '../styles/comunity.module.css';
 
 export default function CommunityPage() {
   const {
     isModalOpen,
     images,
-    comments,
-    selectedImageIndex,
-    comment,
     fetchImages,
     loadComments,
-    handleCommentChange,
-    handleCommentSubmit,
     closeModal,
-    handleCommentDelete,
-    newComment,
-    editingCommentIndex,
-    handleNewCommentChange,
-    handleEdit,
-    handleSubmitEditedComment,
-    handleCancelEdit
-  } = useImage();  
+  } = useImage();
 
   const { getItem } = useStorage();
   const username = getItem('username');
@@ -34,80 +24,49 @@ export default function CommunityPage() {
     fetchImages();
   }, []);
 
+  const handleUserClick = (username: string) => {
+    window.location.href = `/community/userpages/${username}`;
+  };
+
   return (
     <div>
       {authenticated ? (
         <>
           <h1>Welcome, {username}!</h1>
-          {images.map((image: any, index: any) => (
-            <div key={index}>
-              <Image src={image.imageUrl} alt="Uploaded Image" width={250} height={250} />
+          <div className={styles.container}>
+            {images.map((image: ImageData, index: number) => (
+              <div className={styles.imageContainer} key={index}>
+                <div className={styles.profileContainer}>
+                  <a
+                    href={`/community/userpages/${image.username}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleUserClick(image.username);
+                    }}
+                  >
+                    <Image src={image.profilePic} alt="Profile Pic" width={50} height={50} />
+                  </a>
+                  <p>
+                    <a
+                      href={`/community/userpages/${image.username}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleUserClick(image.username);
+                      }}
+                    >
+                      {image.username}
+                    </a>
+                  </p>
+                </div>
+                <Image src={image.imageUrl} alt="Uploaded Image" width={250} height={250} />
 
-              <button onClick={() => loadComments(image.imageUrl, index)}>View Comments</button>
-            </div>
-          ))}
+                <button onClick={() => loadComments(image.imageUrl, index)}>View Comments</button>
+              </div>
+            ))}
+          </div>
 
           <Modal isOpen={isModalOpen} onRequestClose={closeModal} ariaHideApp={false}>
-            <button onClick={closeModal}>Close</button>
-            <div>
-              {selectedImageIndex !== null && (
-                <>
-                  <Image src={images[selectedImageIndex].imageUrl} alt="Selected Image" width={250} height={250} />
-                  <h3>Comments for Image:</h3>
-                  {comments.length > 0 ? (
-                    comments.map((comment: any, index: any) => (
-                      <div key={index}>
-                        {comment.userName}: 
-                        {editingCommentIndex === index ? (
-                          <div>
-                            <input
-                              type="text"
-                              placeholder="Enter new comment..."
-                              value={newComment}
-                              onChange={handleNewCommentChange}
-                            />
-                            <button onClick={handleSubmitEditedComment}>
-                              Submit Edit
-                            </button>
-                            <button onClick={handleCancelEdit}>
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <>
-                            {comment.comment}
-                            {comment.userName === `${username}` && (
-                              <div>
-                                <button onClick={() => handleCommentDelete(images[selectedImageIndex].imageUrl, comment.comment, selectedImageIndex)}>
-                                  Delete Comment
-                                </button>
-                                <button onClick={() => handleEdit(index)}>
-                                  Edit Comment
-                                </button>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    <p>No comments yet.</p>
-                  )}
-
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Add a comment..."
-                      value={comment}
-                      onChange={handleCommentChange}
-                    />
-                    <button onClick={() => handleCommentSubmit(images[selectedImageIndex].imageUrl, comment, selectedImageIndex)}>
-                      Post Comment
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
+            <CommunityPageModal onClose={closeModal} />
           </Modal>
         </>
       ) : (
