@@ -1,0 +1,50 @@
+/* Modals.module.css */
+
+.profileContainer {
+  display: flex;
+  align-items: center;
+}
+
+/* Add a flex container for the profile picture and name */
+.profileInfo {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the cursor pointer on hover for the hoverArea */
+.profileContainer .hoverArea:hover {
+  cursor: pointer;
+}
+
+.profilePic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.commentContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.commentContainer .profilePic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.commentContainer .comment {
+  display: flex;
+  flex-direction: column;
+}
+
+.commentContainer .comment p {
+  margin: 0;
+}
+
+.commentContainer .editComment {
+  margin-top: 10px;
+}

@@ -1,17 +1,15 @@
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/authContext';
 import Image from 'next/image';
 import useStorage from './useStorage';
-import Modal from 'react-modal';
 import { useImage } from '../contexts/imageContext';
 import UserPageModal from './userPageModal';
 import EditProfileModal from './editProfileModal';
-import styles from '../styles/comunity.module.css';
+import FollowerDataModal from './followerDataModal';
+import styles from '../styles/Image.module.css';
 
-const UserComponent = () => {
+const UserComponent: React.FC = () => {
   const {
-    isModalOpen,
-    isEditProfileModalOpen,
     openEditProfileModal,
     closeEditProfileModal,
     profilePic,
@@ -19,20 +17,41 @@ const UserComponent = () => {
     showUploadInput,
     handleFileUpload,
     fetchUserData,
+    fetchFollowerData,
     loadComments,
     deleteImage,
     handleSubmit,
     handleToggleUploadInput,
     closeModal,
-  } = useImage();  
-  
+    followerData, // Added to access the fetched follower data
+    followeeData
+  } = useImage();
+
   const { getItem } = useStorage();
   const username = getItem('username');
   const { authenticated } = useAuth();
-  
+
+  // State to toggle the follower modal
+  const [isFollowerDataModalOpen, setIsFollowerDataModalOpen] = useState(false);
+
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, []);  
+
+  // Function to fetch follower data and open the follower modal
+  const handleOpenFollowerModal = async () => {
+    try {
+      await fetchFollowerData(); // Fetch follower data from the backend and set it in the state
+      setIsFollowerDataModalOpen(true); // Open the follower modal
+    } catch (error) {
+      console.error('Error fetching follower data:', error);
+    }
+  };
+
+  // Function to close the follower modal
+  const handleCloseFollowerModal = () => {
+    setIsFollowerDataModalOpen(false);
+  };
 
   return (
     <div>
@@ -40,9 +59,11 @@ const UserComponent = () => {
         <>
           <h1>Welcome, {username}!</h1>
           <button onClick={openEditProfileModal}>
-            <Image src={profilePic} alt="User's Profile Pic" width={50} height={50} />
+            <Image src={profilePic} alt="User's Profile Pic" width={50} height={50} className={styles.profilePic} />
           </button>
           <button onClick={handleToggleUploadInput}>Upload Image</button>
+
+          <button onClick={handleOpenFollowerModal}>View Followers/Followees</button>
 
           {showUploadInput && (
             <div>
@@ -52,24 +73,25 @@ const UserComponent = () => {
           )}
 
           <div className={styles.container}>
-            {images.map((image: any, index: any) => (
-              <div className={styles.imageContainer} key={index}>
+            {images.map((image: any) => (
+              <div className={styles.imageContainer} key={image.imageUrl}>
                 <Image src={image.imageUrl} alt="Uploaded Image" width={250} height={250} />
 
-                <button onClick={() => loadComments(image.imageUrl, index)}>View Comments</button>
+                <button onClick={() => loadComments(image.imageUrl)}>View Comments</button>
                 <br />
                 <button onClick={() => deleteImage(image.imageUrl)}>Delete Image</button>
               </div>
             ))}
           </div>
 
-          <Modal isOpen={isEditProfileModalOpen} onRequestClose={closeEditProfileModal} ariaHideApp={false}>
-            <EditProfileModal onClose={closeEditProfileModal} />
-          </Modal>
-
-          <Modal isOpen={isModalOpen} onRequestClose={closeModal} ariaHideApp={false}>
-            <UserPageModal onClose={closeModal} />
-          </Modal>
+          <EditProfileModal onClose={closeEditProfileModal} />
+          <UserPageModal onClose={closeModal} />
+          <FollowerDataModal
+            isFollowerDataModalOpen={isFollowerDataModalOpen}
+            closeFollowerDataModal={handleCloseFollowerModal}
+            followerData={followerData}
+            followeeData={followeeData}
+          />
         </>
       ) : (
         <h1>Verification failed. Please log in again.</h1>

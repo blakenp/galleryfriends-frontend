@@ -2,7 +2,7 @@
 
 import { AuthProvider } from "@/app/contexts/authContext";
 import { ImageProvider } from "@/app/contexts/imageContext";
-import OtherUserComponent from "@/app/components/otherUserPages";
+import OtherUserComponent from "@/app/components/otherUserPage";
 
 export default function OtherUserPage() {
 

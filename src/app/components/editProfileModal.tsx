@@ -1,10 +1,11 @@
 import Image from 'next/image';
-import { useState } from 'react';
 import { useUser } from '../contexts/userContext';
 import { useImage } from '../contexts/imageContext';
 import useStorage from './useStorage';
 import axios from 'axios';
 import { backendLink } from '../backend/config';
+import styles from '../styles/Modals.module.css'
+import Modal from 'react-modal';
 
 const EditProfileModal = ({ onClose }: { onClose: () => void }) => {
   const { username, setUsername, email, setEmail } = useUser();
@@ -15,6 +16,7 @@ const EditProfileModal = ({ onClose }: { onClose: () => void }) => {
     handleToggleUploadProfilePicInput,
     handleFileUpload,
     handleProfilePicUpload,
+    isEditProfileModalOpen
   } = useImage();
 
   let currentUsername = getItem('username');
@@ -100,47 +102,50 @@ const EditProfileModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div>
-      <h1>Current Profile Pic:</h1>
-      <br />
-      <Image src={profilePic} alt="User's Profile Pic" width={50} height={50} />
-      <button onClick={handleToggleUploadProfilePicInput}>Upload New Profile Pic</button>
+    <Modal isOpen={isEditProfileModalOpen} onRequestClose={onClose} ariaHideApp={false}>
+      <div>
+        <h1>Current Profile Pic:</h1>
+        <br />
+        <Image src={profilePic} alt="User's Profile Pic" width={50} height={50} className={styles.profilePic} />
+        <button onClick={handleToggleUploadProfilePicInput}>Upload New Profile Pic</button>
 
-      {showUploadProfilePicInput && (
+        {showUploadProfilePicInput && (
+          <div>
+            <input type="file" accept="image/*" onChange={handleFileUpload} />
+            <button onClick={handleProfilePicSubmit}>Submit</button>
+          </div>
+        )}
+
+        <form onSubmit={handleProfileEditSubmit}>
+          <br />
+          <h1>Edit Profile Information:</h1>
+          <p>Current Username: {currentUsername}</p>
+          <label>
+            Username:
+            <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} />
+          </label>
+          <br />
+
+          <p>Current Email: {currentEmail}</p>
+          <label>
+            Email:
+            <input type="text" value={email} onChange={(event) => setEmail(event.target.value)} />
+          </label>
+          <br />
+
+          <button type="submit">Save Changes</button>
+        </form>
+
         <div>
-          <input type="file" accept="image/*" onChange={handleFileUpload} />
-          <button onClick={handleProfilePicSubmit}>Submit</button>
+          <br />
+          <button onClick={confirmDeleteUser}>Delete User</button>
         </div>
-      )}
-
-      <form onSubmit={handleProfileEditSubmit}>
         <br />
-        <h1>Edit Profile Information:</h1>
-        <p>Current Username: {currentUsername}</p>
-        <label>
-          Username:
-          <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} />
-        </label>
-        <br />
-
-        <p>Current Email: {currentEmail}</p>
-        <label>
-          Email:
-          <input type="text" value={email} onChange={(event) => setEmail(event.target.value)} />
-        </label>
-        <br />
-
-        <button type="submit">Save Changes</button>
         <button type="button" onClick={onClose}>
           Cancel/Close
         </button>
-      </form>
-
-      <div>
-        <br />
-        <button onClick={confirmDeleteUser}>Delete User</button>
       </div>
-    </div>
+    </Modal>
   );
 };
 

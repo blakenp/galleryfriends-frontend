@@ -1,11 +1,12 @@
 import { useAuth } from '../contexts/authContext';
 import { useImage, ImageData } from '../contexts/imageContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useStorage from './useStorage';
 import Image from 'next/image';
 import Modal from 'react-modal';
 import CommunityPageModal from './communityPageModal';
-import styles from '../styles/comunity.module.css';
+import SearchBar from './searchBar';
+import styles from '../styles/Image.module.css';
 
 export default function CommunityPage() {
   const {
@@ -33,6 +34,8 @@ export default function CommunityPage() {
       {authenticated ? (
         <>
           <h1>Welcome, {username}!</h1>
+          <SearchBar />
+
           <div className={styles.container}>
             {images.map((image: ImageData, index: number) => (
               <div className={styles.imageContainer} key={index}>
@@ -44,7 +47,7 @@ export default function CommunityPage() {
                       handleUserClick(image.username);
                     }}
                   >
-                    <Image src={image.profilePic} alt="Profile Pic" width={50} height={50} />
+                    <Image src={image.profilePic} alt="Profile Pic" width={50} height={50} className={styles.profilePic} />
                   </a>
                   <p>
                     <a
@@ -64,10 +67,8 @@ export default function CommunityPage() {
               </div>
             ))}
           </div>
-
-          <Modal isOpen={isModalOpen} onRequestClose={closeModal} ariaHideApp={false}>
-            <CommunityPageModal onClose={closeModal} />
-          </Modal>
+          
+          <CommunityPageModal onClose={closeModal} />
         </>
       ) : (
         <h1>Verification failed. Please log in again.</h1>

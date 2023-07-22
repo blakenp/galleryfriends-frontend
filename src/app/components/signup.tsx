@@ -12,6 +12,12 @@ export default function SignUpForm() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Validate the form fields
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      window.alert("Please fill in all the required fields.");
+      return; // Prevent form submission if any field is empty
+    }
+
     try {
       const user = {
         username,
@@ -27,17 +33,15 @@ export default function SignUpForm() {
       setEmail('');
       router.push('/login');
     } catch (error: any) {
-        console.log(error)
-        if (error.response && error.response.status === 400) {
-            window.alert('That username already exists in our system!');
-        }
-        else if (error.response.status === 402) {
-            window.alert('That email already exists in our system!')
-        }
-        else {
-            console.log('Error creating user account: ', error);
-            window.alert('Sorry, an error occurred. Try again!');
-        }
+      console.log(error);
+      if (error.response && error.response.status === 400) {
+        window.alert('That username already exists in our system!');
+      } else if (error.response && error.response.status === 402) {
+        window.alert('That email already exists in our system!');
+      } else {
+        console.log('Error creating user account: ', error);
+        window.alert('Sorry, an error occurred. Try again!');
+      }
     }
   };
 
