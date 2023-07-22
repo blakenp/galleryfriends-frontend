@@ -1,16 +1,14 @@
 import { useAuth } from '../contexts/authContext';
 import { useImage, ImageData } from '../contexts/imageContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import useStorage from './useStorage';
 import Image from 'next/image';
-import Modal from 'react-modal';
 import CommunityPageModal from './communityPageModal';
 import SearchBar from './searchBar';
 import styles from '../styles/Image.module.css';
 
 export default function CommunityPage() {
   const {
-    isModalOpen,
     images,
     fetchImages,
     loadComments,
