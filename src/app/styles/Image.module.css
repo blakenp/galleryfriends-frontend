@@ -17,4 +17,11 @@
   .profileContainer p {
     margin: 0; /* Remove default margin for the paragraph element */
   }
+
+  .profilePic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
   
