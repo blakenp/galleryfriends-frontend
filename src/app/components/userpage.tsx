@@ -8,7 +8,7 @@ import EditProfileModal from './editProfileModal';
 import FollowerDataModal from './followerDataModal';
 import styles from '../styles/Image.module.css';
 
-const UserComponent: React.FC = () => {
+export default function UserComponent () {
   const {
     openEditProfileModal,
     closeEditProfileModal,
@@ -73,11 +73,11 @@ const UserComponent: React.FC = () => {
           )}
 
           <div className={styles.container}>
-            {images.map((image: any) => (
-              <div className={styles.imageContainer} key={image.imageUrl}>
+            {images.map((image: any, index: any) => (
+              <div className={styles.imageContainer} key={index}>
                 <Image src={image.imageUrl} alt="Uploaded Image" width={250} height={250} />
 
-                <button onClick={() => loadComments(image.imageUrl)}>View Comments</button>
+                <button onClick={() => loadComments(image.imageUrl, index)}>View Comments</button>
                 <br />
                 <button onClick={() => deleteImage(image.imageUrl)}>Delete Image</button>
               </div>
@@ -99,5 +99,3 @@ const UserComponent: React.FC = () => {
     </div>
   );
 };
-
-export default UserComponent;
