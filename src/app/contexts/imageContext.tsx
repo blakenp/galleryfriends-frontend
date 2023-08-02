@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { backendLink } from '../backend/config';
 import useStorage from '../components/useStorage';
 import { useAuth } from './authContext';
@@ -19,7 +19,7 @@ interface Comment {
     comment: string;
 }
   
-export interface ImageData {
+interface ImageData {
   imageUrl: string;
   showCommentInput: boolean;
   comment: string;
@@ -51,6 +51,8 @@ export const ImageProvider = ({ children }: any) => {
     const [profilePic, setProfilePic] = useState<string>('');
     const [images, setImages] = useState<ImageData[]>([]);
     const [comments, setComments] = useState<Comment[]>([]);
+    const [likesMap, setLikesMap] = useState<Map<string, number> | null>(null);
+    const [likesCheckerMap, setLikesCheckerMap] = useState<Map<string, string[]> | null>(null);
     const [followerData, setFollowerData] = useState<FollowerData[]>([]);
     const [followeeData, setFolloweeData] = useState<FollowerData[]>([]);
     const [showUploadInput, setShowUploadInput] = useState<boolean>(false);
@@ -104,11 +106,13 @@ export const ImageProvider = ({ children }: any) => {
         const response = await axios.get(backendLink + `/api/users/userpage/${username}`);
         const userData = response.data;
         const profileImage = userData.profilePic;
-        const imageData = userData.imageUrls.map((imageUrl: string) => ({
-          imageUrl,
+    
+        const imageData = userData.imageUrls.map(( imageUrl: string) => ({
+          imageUrl: imageUrl,
           showCommentInput: false,
           comment: '',
         }));
+    
         setImages(imageData);
         setProfilePic(profileImage);
       } catch (error) {
@@ -282,6 +286,46 @@ export const ImageProvider = ({ children }: any) => {
         console.log('Error unfollowing user: ', error);
       }
     }
+
+    const getLikes = async (images: any) => {
+      try {
+        const imageUrls = images.map((image: any) => image.imageUrl).join(',');
+        console.log('imageUrls: ', imageUrls);
+        const response = await axios.get(backendLink + `/api/users/likes/${username}?imageUrls=${encodeURIComponent(imageUrls)}`);
+        const responseData = response.data;
+        const likesData = responseData.formattedLikesMap;
+        const likesCheckerData = responseData.likesChecker;
+        setLikesMap(likesData); 
+        setLikesCheckerMap(likesCheckerData);
+        console.log('responseData: ', responseData);
+      } catch (error) {
+        console.log('Error fetching likes: ', error);
+      }
+    };
+
+    const likePost = async (imageUrl: string) => {
+      try {
+        const response = await axios.post(backendLink + `/api/users/likes/${username}`, {
+          imageUrl: imageUrl,
+        });
+        const likeData = response.data;
+        console.log(likeData);
+      } catch (error) {
+        console.log('Error liking post: ', error);
+      }
+    };
+
+    const unLikePost = async (imageUrl: string) => {
+      try {
+        const response = await axios.delete(backendLink + `/api/users/likes/${username}`, {
+          params: { imageUrl },
+        });
+        const data = response.data;
+        console.log(data);
+      } catch (error) {
+        console.log('Error unliking post: ', error);
+      }
+    };
   
     const handleSubmit = async () => {
       if (!selectedFile) {
@@ -436,6 +480,8 @@ export const ImageProvider = ({ children }: any) => {
       followeeData,
       images,
       comments,
+      likesMap,
+      likesCheckerMap,
       showUploadInput,
       showUploadProfilePicInput,
       selectedImageIndex,
@@ -449,6 +495,9 @@ export const ImageProvider = ({ children }: any) => {
       fetchOtherUserData,
       loadComments,
       postComment,
+      getLikes,
+      likePost,
+      unLikePost,
       deleteImage,
       fetchFollowerData,
       followUser,
