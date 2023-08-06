@@ -5,7 +5,8 @@ import useStorage from './useStorage';
 import Image from 'next/image';
 import CommunityPageModal from './communityPageModal';
 import SearchBar from './searchBar';
-import styles from '../styles/Image.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 export default function CommunityPage() {
   const {
@@ -24,6 +25,8 @@ export default function CommunityPage() {
   const username = getItem('username');
   const { authenticated } = useAuth();
   const [isLikesUpdated, setIsLikesUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isImagesLoaded, setIsImagesLoaded] = useState(false);
 
   // Function to check if the current user has already liked an image
   const hasUserLikedImage = (imageUrl: string) => {
@@ -36,6 +39,7 @@ export default function CommunityPage() {
 
   useEffect(() => {
     fetchImages();
+    setIsImagesLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -49,6 +53,20 @@ export default function CommunityPage() {
     getLikes(images);
     setIsLikesUpdated(false);
   }, [isLikesUpdated]);
+
+  useEffect(() => {
+    // Fetch the authenticated state or do any other asynchronous operations here
+    // Once the authenticated state is loaded, set isLoading to false
+    const loadAuthenticatedState = async () => {
+      // Fetch authenticated state or do any asynchronous operations here
+      // For example, you can use an API call or a local storage check
+      // For the sake of example, we're using a simple setTimeout to simulate loading
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a 1-second delay
+      setIsLoading(false);
+    };
+
+    loadAuthenticatedState();
+  }, []);
 
   const handleLikePost = async (imageUrl: string) => {
     try {
@@ -69,48 +87,65 @@ export default function CommunityPage() {
   };
 
   return (
-    <div>
-      {authenticated ? (
+    <div className="min-h-screen">
+      {isLoading ? (
+        // Render the loading animation or content while waiting for the authenticated state
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        </div>
+      ) : authenticated ? (
+        // Render the community page content when authenticated state is loaded and true
         <>
-          <h1>Welcome, {username}!</h1>
-          <SearchBar />
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-4 text-white">Welcome, {username}!</h1>
+            <SearchBar />
+          </div>
 
-          <div className={styles.container}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
             {images.map((image: any, index: number) => (
-              <div className={styles.imageContainer} key={index}>
-                <div className={styles.profileContainer}>
+              <div key={index} className="flex flex-col bg-white rounded-lg shadow-lg pt-4">
+                <div className="flex items-center p-4">
                   <a
                     href={`/community/userpages/${image.username}`}
                     onClick={(e) => {
                       e.preventDefault();
                       handleUserClick(image.username);
                     }}
+                    className="flex items-center"
                   >
-                    <Image src={image.profilePic} alt="Profile Pic" width={50} height={50} className={styles.profilePic} />
+                    <div className="rounded-full overflow-hidden border border-2 border-blue-500">
+                      <Image src={image.profilePic} alt="Profile Pic" width={50} height={50} />
+                    </div>
+                    <p className="ml-2 font-bold cursor-pointer">{image.username}</p>
                   </a>
-                  <p>
-                    <a
-                      href={`/community/userpages/${image.username}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleUserClick(image.username);
-                      }}
-                    >
-                      {image.username}
-                    </a>
-                  </p>
                 </div>
-                <Image src={image.imageUrl} alt="Uploaded Image" width={250} height={250} />
+                <div className="h-64 w-64 relative overflow-hidden mx-auto">
+                  <Image src={image.imageUrl} alt="Uploaded Image" layout="fill" objectFit="contain" />
+                </div>
 
-                {hasUserLikedImage(image.imageUrl) ? (
-                  <button onClick={() => handleLikePost(image.imageUrl)}>Unlike</button>
-                ) : (
-                  <button onClick={() => handleLikePost(image.imageUrl)}>Like</button>
-                )}
-
-                <p>{likesMap !== null ? likesMap[image.imageUrl] || 0 : 0} Like{likesMap !== null && likesMap[image.imageUrl] !== 1 ? 's' : ''}</p>
-
-                <button onClick={() => loadComments(image.imageUrl, index)}>View Comments</button>
+                <div className="p-4 flex justify-between items-center">
+                  <button
+                    className={`flex items-center text-sm font-bold ${
+                      hasUserLikedImage(image.imageUrl) ? 'text-red-500' : 'text-gray-600'
+                    }`}
+                    onClick={() => handleLikePost(image.imageUrl)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      style={{
+                        fill: hasUserLikedImage(image.imageUrl) ? 'red' : 'none', // Fill with red when liked, no fill when not liked
+                        fontSize: hasUserLikedImage(image.imageUrl) ? '22px' : '18px', // Increase the heart icon size here
+                      }}
+                    />
+                    <span className="ml-1">{likesMap !== null ? likesMap[image.imageUrl] || 0 : 0}</span>
+                  </button>
+                  <button
+                    className="px-2 py-1 bg-gray-500 text-white rounded text-sm"
+                    onClick={() => loadComments(image.imageUrl, index)}
+                  >
+                    View Comments
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -118,7 +153,8 @@ export default function CommunityPage() {
           <CommunityPageModal onClose={closeModal} />
         </>
       ) : (
-        <h1>Verification failed. Please log in again.</h1>
+        // Render a message or other content when authenticated state is loaded and false
+        <h1 className="text-3xl font-bold text-center">Verification failed. Please log in again.</h1>
       )}
     </div>
   );

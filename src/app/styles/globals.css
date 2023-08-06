@@ -16,6 +16,21 @@
   }
 }
 
+.btn-custom {
+  /* Add your custom styles here */
+  background-color: rgb(45, 214, 240);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  /* Hover effect */
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-custom:hover {
+  background-color: rgb(26, 92, 114); /* Change to your desired lighter shade of blue */
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(

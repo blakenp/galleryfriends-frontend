@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { backendLink } from '../backend/config';
 import axios from 'axios';
-import styles from '../styles/SearchBar.module.css';
 import Image from 'next/image';
 
 interface UserSuggestion {
@@ -42,23 +41,38 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className={styles.searchBar}>
+    <div className="relative inline-block">
       <input
         type="text"
         placeholder="Search for users here..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        className="border-2 border-black rounded px-3 py-2 w-60 text-sm focus:outline-none"
       />
-      <ul className={styles.suggestionsList}>
-        {suggestions.map((user) => (
-          <li key={user.username} onClick={() => handleUserClick(user.username)}>
-            <div className={styles.suggestionItem}>
-              <Image src={user.profilePic} alt="Profile Pic" width={30} height={30} className={styles.profilePic} />
-              <span>{user.username}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {suggestions.length > 0 && (
+        <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded mt-1 shadow-md">
+          {suggestions.map((user) => (
+            <li
+              key={user.username}
+              onClick={() => handleUserClick(user.username)}
+              className="px-4 py-2 cursor-pointer flex items-center border-b border-gray-200 last:border-b-0"
+            >
+              <div className="rounded-full overflow-hidden border border-2 border-blue-500">
+                <div className="flex items-center h-full">
+                  <Image
+                    src={user.profilePic}
+                    alt="Profile Pic"
+                    width={50}
+                    height={50}
+                    className="rounded-full"
+                  />
+                </div>
+              </div>
+              <span className="ml-2 text-sm">{user.username}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
