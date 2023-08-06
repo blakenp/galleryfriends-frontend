@@ -105,19 +105,15 @@ export default function CommunityPage() {
             {images.map((image: any, index: number) => (
               <div key={index} className="flex flex-col bg-white rounded-lg shadow-lg pt-4">
                 <div className="flex items-center p-4">
-                  <a
-                    href={`/community/userpages/${image.username}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleUserClick(image.username);
-                    }}
+                  <button
                     className="flex items-center"
+                    onClick={() => handleUserClick(image.username)}
                   >
                     <div className="rounded-full overflow-hidden border border-2 border-blue-500">
                       <Image src={image.profilePic} alt="Profile Pic" width={50} height={50} />
                     </div>
                     <p className="ml-2 font-bold cursor-pointer">{image.username}</p>
-                  </a>
+                  </button>
                 </div>
                 <div className="h-64 w-64 relative overflow-hidden mx-auto">
                   <Image src={image.imageUrl} alt="Uploaded Image" layout="fill" objectFit="contain" />
@@ -154,7 +150,7 @@ export default function CommunityPage() {
         </>
       ) : (
         // Render a message or other content when authenticated state is loaded and false
-        <h1 className="text-3xl font-bold text-center">Verification failed. Please log in again.</h1>
+        <h1 className="text-3xl font-bold text-center text-white">Verification failed. Please log in again.</h1>
       )}
     </div>
   );

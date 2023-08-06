@@ -196,7 +196,7 @@ const OtherUserComponent = () => {
         </>
       ) : (
         // Render a message when not authenticated
-        <h1 className="text-3xl font-bold text-center">Verification failed. Please log in again.</h1>
+        <h1 className="text-3xl font-bold text-center text-white">Verification failed. Please log in again.</h1>
       )}
     </div>
   );

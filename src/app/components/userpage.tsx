@@ -203,7 +203,7 @@ export default function UserComponent() {
         </>
       ) : (
         // Render a message or other content when authenticated state is false
-        <h1 className="text-3xl font-bold text-center">Verification failed. Please log in again.</h1>
+        <h1 className="text-3xl font-bold text-center text-white">Verification failed. Please log in again.</h1>
       )}
     </div>
   );
