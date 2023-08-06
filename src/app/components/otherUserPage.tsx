@@ -5,24 +5,25 @@ import axios from 'axios';
 import { backendLink } from '../backend/config';
 import { useImage } from '../contexts/imageContext';
 import OtherUserPageModal from './otherUserPageModal';
-import styles from '../styles/Image.module.css';
 import { usePathname } from 'next/navigation';
 import useStorage from './useStorage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 const OtherUserComponent = () => {
-  const { 
+  const {
     profilePic,
-    images, 
+    images,
     likesMap,
     likesCheckerMap,
-    fetchOtherUserData, 
+    fetchOtherUserData,
     getLikes,
     likePost,
     unLikePost,
-    loadComments, 
-    followUser, 
-    unFollowerUser, 
-    closeModal 
+    loadComments,
+    followUser,
+    unFollowerUser,
+    closeModal,
   } = useImage();
 
   const pathname = usePathname();
@@ -33,6 +34,7 @@ const OtherUserComponent = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [isLikesUpdated, setIsLikesUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const checkFollowRelation = async () => {
     try {
@@ -85,6 +87,20 @@ const OtherUserComponent = () => {
     setIsLikesUpdated(false);
   }, [isLikesUpdated]);
 
+  useEffect(() => {
+    // Fetch the authenticated state or do any other asynchronous operations here
+    // Once the authenticated state is loaded, set isLoading to false
+    const loadAuthenticatedState = async () => {
+      // Fetch authenticated state or do any asynchronous operations here
+      // For example, you can use an API call or a local storage check
+      // For the sake of example, we're using a simple setTimeout to simulate loading
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a 1-second delay
+      setIsLoading(false);
+    };
+
+    loadAuthenticatedState();
+  }, []);
+
   const handleLikePost = async (imageUrl: string) => {
     try {
       if (hasUserLikedImage(imageUrl)) {
@@ -100,35 +116,78 @@ const OtherUserComponent = () => {
   };
 
   return (
-    <div>
-      {authenticated ? (
+    <div className="min-h-screen">
+      {isLoading ? (
+        // Render the loading animation or content while waiting for the other user's data
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+        </div>
+      ) : authenticated ? (
+        // Render the other user page content when authenticated
         <>
-          <Image src={profilePic} alt="User's Profile Pic" width={50} height={50} className={styles.profilePic} />
-          <h1>{otherUsername}</h1>
-          {/* Render follow/unfollow button only if the user is not viewing their own profile */}
+          <div className="flex items-center mb-4 mt-4">
+            <div className="rounded-full overflow-hidden border border-2 border-blue-500">
+              <Image src={profilePic} alt="Profile Pic" width={50} height={50} />
+            </div>
+            <h1 className="ml-2 text-xl font-bold text-white">{otherUsername}</h1>
+          </div>
+
           {!isOwnProfile && (
             <>
               {isFollowing ? (
-                <button onClick={handleUnfollow}>Unfollow User</button>
+                <button className="px-4 py-2 rounded bg-red-500 text-white border border-2 border-white" onClick={handleUnfollow}>
+                  Unfollow User
+                </button>
               ) : (
-                <button onClick={handleFollow}>Follow User</button>
+                <button className="px-4 py-2 rounded bg-cyan-500 text-white border border-2 border-white" onClick={handleFollow}>
+                  Follow User
+                </button>
               )}
             </>
           )}
-          <div className={styles.container}>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
             {images.map((image: any, index: any) => (
-              <div className={styles.imageContainer} key={index}>
-                <Image src={image.imageUrl} alt="Uploaded Image" width={250} height={250} />
+              <div className="flex flex-col bg-white rounded-lg shadow-lg pt-4" key={index}>
+                <div className="flex items-center p-4">
+                  <div className="rounded-full overflow-hidden border border-2 border-blue-500">
+                    <Image src={profilePic} alt="Profile Pic" width={50} height={50} />
+                  </div>
+                  <p className="ml-2 font-bold">{image.username}</p>
+                </div>
+                <div className="h-64 w-64 relative overflow-hidden mx-auto">
+                  <Image
+                    src={image.imageUrl}
+                    alt="Uploaded Image"
+                    layout="fill"
+                    objectFit="contain"
+                    // Removed hover scaling here
+                  />
+                </div>
 
-                {hasUserLikedImage(image.imageUrl) ? (
-                  <button onClick={() => handleLikePost(image.imageUrl)}>Unlike</button>
-                ) : (
-                  <button onClick={() => handleLikePost(image.imageUrl)}>Like</button>
-                )}
-
-                <p>{likesMap !== null ? likesMap[image.imageUrl] || 0 : 0} Like{likesMap !== null && likesMap[image.imageUrl] !== 1 ? 's' : ''}</p>
-
-                <button onClick={() => loadComments(image.imageUrl, index)}>View Comments</button>
+                <div className="p-4 flex justify-between items-center">
+                  <button
+                    className={`px-4 py-2 text-xl rounded-full ${
+                      hasUserLikedImage(image.imageUrl) ? 'text-red-500' : 'text-black'
+                    }`}
+                    onClick={() => handleLikePost(image.imageUrl)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      style={{
+                        fill: hasUserLikedImage(image.imageUrl) ? 'red' : 'none', // Fill with red when liked, no fill when not liked
+                        fontSize: hasUserLikedImage(image.imageUrl) ? '22px' : '18px', // Increase the heart icon size here
+                      }}
+                    />
+                    <span className="ml-1">{likesMap !== null ? likesMap[image.imageUrl] || 0 : 0}</span>
+                    </button>
+                    <button
+                      className="px-2 py-1 bg-gray-500 text-white rounded text-sm"
+                      onClick={() => loadComments(image.imageUrl, index)}
+                    >
+                    View Comments
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -136,7 +195,8 @@ const OtherUserComponent = () => {
           <OtherUserPageModal onClose={closeModal} />
         </>
       ) : (
-        <h1>Verification failed. Please log in again.</h1>
+        // Render a message when not authenticated
+        <h1 className="text-3xl font-bold text-center">Verification failed. Please log in again.</h1>
       )}
     </div>
   );

@@ -3,6 +3,10 @@
     font-family: Lucida Handwriting, cursive;
     font-weight: 600;
     text-transform: uppercase;
+    background: none; /* Remove any default button styles if present */
+    border: none; /* Remove any default button styles if present */
+    color: white;
+    cursor: pointer;
 }
 
 .navbar {

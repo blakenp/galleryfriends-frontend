@@ -62,6 +62,7 @@ export const ImageProvider = ({ children }: any) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editingCommentIndex, setEditingCommentIndex] = useState<number>(-1);
     const [comment, setComment] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
   
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
@@ -489,6 +490,7 @@ export const ImageProvider = ({ children }: any) => {
       isEditing,
       editingCommentIndex,
       comment,
+      errorMessage,
       handleFileUpload,
       fetchImages,
       fetchUserData,

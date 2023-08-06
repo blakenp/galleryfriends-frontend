@@ -1,14 +1,15 @@
-import './styles/globals.css'
-import { Inter } from 'next/font/google'
-import Navbar from './components/navbar'
-import { AuthProvider } from './contexts/authContext'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/globals.css';
+import { Inter } from 'next/font/google';
+import Navbar from './components/navbar';
+import { AuthProvider } from './contexts/authContext';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'Gallery Friends',
   description: 'An app used to post and view beautiful images',
-}
+};
 
 export default function RootLayout({
   children,
@@ -17,11 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`bg-gradient-to-br from-blue-500 to-purple-500 ${inter.className}`}>
         <AuthProvider>
           <Navbar />
         </AuthProvider>
         {children}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" defer></script>
       </body>
     </html>
   )
