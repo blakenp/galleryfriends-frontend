@@ -1,3 +1,4 @@
+import React from 'react';
 import { useImage } from "../contexts/imageContext";
 import Image from "next/image";
 import useStorage from "./useStorage";
@@ -49,26 +50,28 @@ const CommunityPageModal = ({ onClose }: { onClose: () => void }) => {
                     <p className="text-sm font-bold">{comment.userName}:</p>
                     <p className="text-sm">{comment.comment}</p>
                     {editingCommentIndex === index && (
-                      <div className="flex space-x-2 mt-2">
+                      <div className="flex flex-col space-y-2 mt-2">
                         <input
                           type="text"
-                          placeholder="Enter new comment..."
+                          placeholder="comment..."
                           value={newComment}
                           onChange={handleNewCommentChange}
-                          className="border border-gray-300 rounded px-2 py-1 w-64"
+                          className="border border-gray-300 rounded px-2 py-1 w-full md:w-1/2"
                         />
-                        <button
-                          onClick={handleSubmitEditedComment}
-                          className="bg-blue-500 text-white rounded px-2 py-1"
-                        >
-                          Submit Edit
-                        </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="bg-red-500 text-white rounded px-2 py-1"
-                        >
-                          Cancel
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={handleSubmitEditedComment}
+                            className="bg-blue-500 text-white rounded px-2 py-1 md:px-1 md:py-0.5"
+                          >
+                            Submit Edit
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="bg-red-500 text-white rounded px-2 py-1 md:px-1 md:py-0.5"
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -76,7 +79,7 @@ const CommunityPageModal = ({ onClose }: { onClose: () => void }) => {
                     <div className="ml-auto space-x-2">
                       <button
                         onClick={() => handleEdit(index)}
-                        className="bg-green-500 text-white rounded px-2 py-1"
+                        className="bg-green-500 text-white rounded px-2 py-1 md:px-1 md:py-0.5"
                       >
                         Edit Comment
                       </button>
@@ -84,7 +87,7 @@ const CommunityPageModal = ({ onClose }: { onClose: () => void }) => {
                         onClick={() =>
                           handleCommentDelete(images[selectedImageIndex].imageUrl, comment.comment, selectedImageIndex)
                         }
-                        className="bg-red-500 text-white rounded px-2 py-1"
+                        className="bg-red-500 text-white rounded px-2 py-1 md:px-1 md:py-0.5"
                       >
                         Delete Comment
                       </button>
@@ -102,13 +105,13 @@ const CommunityPageModal = ({ onClose }: { onClose: () => void }) => {
                 placeholder="Add a comment..."
                 value={comment}
                 onChange={handleCommentChange}
-                className="border border-gray-300 rounded px-2 py-1 w-full md:w-1/2" // Adjust the width class here
+                className="border border-gray-300 rounded px-2 py-1 w-full md:w-1/2"
               />
               <button
                 onClick={() =>
                   handleCommentSubmit(images[selectedImageIndex].imageUrl, comment, selectedImageIndex)
                 }
-                className="bg-blue-500 text-white rounded px-2 py-1"
+                className="bg-blue-500 text-white rounded px-2 py-1 md:px-1 md:py-0.5"
               >
                 Post Comment
               </button>
