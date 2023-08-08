@@ -15,6 +15,10 @@ export default function AuthNavbar() {
     window.location.href = '/';
   };
 
+  const handleOtherNavigation = (menuItemPath: string) => {
+    window.location.href = `${menuItemPath}`;
+  }
+
   const handleLogout = () => {
     removeItem('sessionToken');
     window.location.href = '/';
@@ -36,13 +40,14 @@ export default function AuthNavbar() {
 
             return (
               <Link key={item.title} href={item.url}>
-                <div
+                <button
                   className={`${
                     isActive ? 'text-white' : 'text-gray-300'
                   } py-2 md:py-0 md:hover:text-white`}
+                  onClick={() => handleOtherNavigation(item.url)}
                 >
                   {item.title}
-                </div>
+                </button>
               </Link>
             );
           })}
@@ -64,12 +69,15 @@ export default function AuthNavbar() {
 
             return (
               <Link key={item.title} href={item.url}>
-                <div
-                  className={`${
-                    isActive ? 'text-white' : 'text-gray-300'
-                  } py-2 md:py-0 md:hover:text-white`}
-                >
-                  {item.title}
+                <div>
+                  <button
+                    className={`${
+                      isActive ? 'text-white' : 'text-gray-300'
+                    } py-2 md:py-0 md:hover:text-white`}
+                    onClick={() => handleOtherNavigation(item.url)}
+                  >
+                    {item.title}
+                  </button>
                 </div>
               </Link>
             );
