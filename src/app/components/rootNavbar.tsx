@@ -11,6 +11,10 @@ export default function RootNavbar() {
     window.location.href = '/';
   };
 
+  const handleOtherNavigation = (menuItemPath: string) => {
+    window.location.href = `${menuItemPath}`;
+  }
+
   const handleMobileMenuToggle = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -21,19 +25,20 @@ export default function RootNavbar() {
         <button className="text-2xl font-semibold cursive" onClick={handleHomeNavigation}>
           Gallery Friends
         </button>
-        <nav className="hidden md:flex md:items-center md:space-x-6">
+        <nav className={`hidden md:flex md:items-center md:space-x-6 ${mobileMenuOpen ? 'hidden' : 'flex'}`}>
           {MenuItems.map((item) => {
             const isActive = pathname === item.url;
 
             return (
               <Link key={item.title} href={item.url}>
-                <div
+                <button
                   className={`${
                     isActive ? 'text-white' : 'text-gray-300'
                   } py-2 md:py-0 md:hover:text-white`}
+                  onClick={() => handleOtherNavigation(item.url)}
                 >
                   {item.title}
-                </div>
+                </button>
               </Link>
             );
           })}
@@ -52,12 +57,15 @@ export default function RootNavbar() {
 
             return (
               <Link key={item.title} href={item.url}>
-                <div
-                  className={`${
-                    isActive ? 'text-white' : 'text-gray-300'
-                  } py-2 md:py-0 md:hover:text-white`}
-                >
-                  {item.title}
+                <div>
+                  <button
+                    className={`${
+                      isActive ? 'text-white' : 'text-gray-300'
+                    } py-2 md:py-0 md:hover:text-white`}
+                    onClick={() => handleOtherNavigation(item.url)}
+                  >
+                    {item.title}
+                  </button>
                 </div>
               </Link>
             );
