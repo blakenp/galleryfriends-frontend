@@ -46,6 +46,7 @@ export default function RootNavbar() {
         <button
           className="text-xl md:hidden"
           onClick={handleMobileMenuToggle}
+          style={{ fontSize: '2rem', lineHeight: '1' }}
         >
           &#9776; {/* Hamburger icon */}
         </button>
