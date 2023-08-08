@@ -102,7 +102,7 @@ const CommunityPageModal = ({ onClose }: { onClose: () => void }) => {
                 placeholder="Add a comment..."
                 value={comment}
                 onChange={handleCommentChange}
-                className="border border-gray-300 rounded px-2 py-1 w-64"
+                className="border border-gray-300 rounded px-2 py-1 w-full md:w-1/2" // Adjust the width class here
               />
               <button
                 onClick={() =>
