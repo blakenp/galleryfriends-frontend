@@ -50,7 +50,7 @@ const SearchBar: React.FC = () => {
         className="border-2 border-black rounded px-3 py-2 w-60 text-sm focus:outline-none"
       />
       {suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded mt-1 shadow-md">
+        <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded mt-1 shadow-md z-10">
           {suggestions.map((user) => (
             <li
               key={user.username}
