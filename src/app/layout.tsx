@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/globals.css';
 import { Inter } from 'next/font/google';
 import Navbar from './components/navbar';
+import Footer from './components/footer';
 import { AuthProvider } from './contexts/authContext';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -23,6 +24,7 @@ export default function RootLayout({
           <Navbar />
         </AuthProvider>
         {children}
+        <Footer />
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" defer></script>
       </body>
     </html>
