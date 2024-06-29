@@ -10,11 +10,7 @@ export default function Footer() {
     },
     {
       name: 'Github Backend Repo',
-      url: 'https://github.com/blakenp/gallery-friends-backend-copy',
-    },
-    {
-      name: 'CS 260 Startup Repo',
-      url: 'https://github.com/blakenp/CS260-startup-example',
+      url: 'https://github.com/blakenp/galleryfriends-backend',
     },
   ];
 
